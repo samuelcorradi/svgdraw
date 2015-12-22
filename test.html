@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="jsdraw.js"></script>
+</head>
+<body>
+<div id="canvas"></div>
+</body>
+<script>
+var paper = new window.jsdraw.Canvas("canvas");
+
+var group1 = new window.jsdraw.Group(paper);
+
+console.log(group1);
+
+
+var element = new window.jsdraw.Element2(paper, "circulo", "circle");
+
+// var el = paper.createElement("circle");
+
+element.mousemove(function(e)
+{
+	console.log(e.clientX);
+});
+
+// el.click(function(e)
+// {
+// 	e.srcElement.style["fill-opacity"] = "0.4";
+// });
+
+element.background("red");
+
+/*
+var container = paper.getContainer();
+console.log(container);
+container.addEventListener("click", function()
+{
+	paper.clear();
+});
+*/
+
+//var svg = paper.getSvg();
+//var circle = jsdraw.lib.circle({"cx": 0});
+
+
+
+//var element = new jsdraw.Element(paper, circle);
+
+//svg.appendChild(circle);
+// circle.style.fill = "red";
+//paper.clear();
+//paper.createElement("circle");
+
+var consta = function(nome)
+{
+	this.setNome(nome);
+	return this;
+}
+consta.prototype.setNome = function(nome)
+{
+	this.nome = nome;
+}
+consta.prototype.getNome = function()
+{
+	return this.nome;
+}
+
+var a = consta;
+
+var teste = new a("Samuel");
+console.log(teste.nome);
+
+var teste2 = new a("Berenice");
+console.log(teste2.nome);
+console.log(teste.nome);
+
+var b = consta;
+b.prototype.getNome = function()
+{
+	return "meu nome é " + this.nome;
+}
+var teste3 = new b("Marcelo");
+console.log(teste3.getNome());
+
+</script>
+</html>
