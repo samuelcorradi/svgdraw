@@ -3,7 +3,7 @@
  * create the jsdraw lib.
  */
  // TODO: Definir em cada elemento dados.
-var jsdraw = (function(escope) {
+jsdraw = (function(escope) {
 
 	/**
 	 * Main "class" defined by
@@ -74,6 +74,26 @@ var jsdraw = (function(escope) {
 			return svg;
 
 		}
+
+		/**
+		 * Factory for circle objects.
+		 */
+		this.circle = function(id, attr)
+		{
+
+			return new escope.lib.Circle(this, id, attr);
+		
+		}
+
+		/**
+		 * Factory for circle objects.
+		 */
+		this.rect = function(id, attr)
+		{
+
+			return new escope.lib.Rect(this, id, attr);
+		
+		}
 		
 
 		/**
@@ -90,7 +110,7 @@ var jsdraw = (function(escope) {
 	 * Método construtor único para todos
 	 * elementos.
 	 */
-	var construct = function(Canvas, id, attr)
+	escope.Element = function(Canvas, id, attr)
 	{
 
 		var svg = Canvas.getSvg();
@@ -99,7 +119,7 @@ var jsdraw = (function(escope) {
 
 		try
 		{
-			var el = this.draw();
+			var el = this.draw(attr);
 		}
 		catch(e)
 		{
@@ -111,65 +131,6 @@ var jsdraw = (function(escope) {
 		svg.appendChild(el);
 
 		el, svg = null;
-
-		return this;
-
-	}
-
-	/**
-	 * Base para todos elementos.
-	 */
-	escope.Element = construct;
-
-	escope.Element.prototype.draw = function()
-	{
-
-		throw "Abstract method.";
-	
-	}
-
-	escope.liba = {};
-
-	/**
-	 * Elemento círculo.
-	 */
-	escope.liba.Circle = construct;
-
-	escope.liba.Circle.prototype.draw = function()
-	{
-
-		if( ! attr ) attr = {};
-
-		var el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-
-		el.setAttribute("cx", attr.cx || 20);
-		
-		el.setAttribute("cy", attr.cy || 20);
-
-		el.setAttribute("r", attr.r || 20);
-
-		return el;
-
-	}
-
-	/**
-	 * Base "class" for all elements
-	 * that can be drawed.
-	 */
-	escope.Element2 = function Element2(Canvas, id, type, attr)
-	{
-
-		var svg = Canvas.getSvg();
-
-		if( svg.getElementById(id) ) throw "Object id already exists.";
-
-		if( ! escope.lib[type] ) throw "Invalid type.";
-
-		var el = escope.lib[type].draw(attr);
-
-		el.setAttribute("id", id);
-
-		svg.appendChild(el);
 
 
 		/**
@@ -336,40 +297,68 @@ var jsdraw = (function(escope) {
 
 	}
 
+	escope.Element.prototype.draw = function(attr)
+	{
+
+		throw "Abstract method.";
+	
+	}
+
+	escope.lib = {};
 
 	/**
-	 * Colecttion of elements.
+	 * Elemento círculo.
 	 */
-	escope.lib = {
+	escope.lib.Circle = function(Canvas, id, attr)
+	{
 
-		"circle": {
+		escope.Element.call(this, Canvas, id, attr)
+	
+	};
 
-			draw: function(propt)
-			{
+	escope.lib.Circle.prototype.draw = function(attr)
+	{
 
-				if( ! propt ) propt = {};
+		attr = attr || {};
 
-				var element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		var el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 
-				element.setAttribute("cx", propt.cx || 20);
-				
-				element.setAttribute("cy", propt.cy || 20);
+		el.setAttribute("cx", attr.cx || 20);
+		
+		el.setAttribute("cy", attr.cy || 20);
 
-				element.setAttribute("r", propt.r || 20);
+		el.setAttribute("r", attr.r || 20);
 
-				return element;
+		return el;
 
-			}
-		},
+	}
 
-		"square": {
+	/**
+	 * Elemento quadrado.
+	 */
+	escope.lib.Rect = function(Canvas, id, attr)
+	{
 
-			draw: function()
-			{
+		escope.Element.call(this, Canvas, id, attr)
+	
+	};
 
-			}
+	escope.lib.Rect.prototype.draw = function(attr)
+	{
 
-		}
+		attr = attr || {};
+
+		var el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+		el.setAttribute("width", attr.width || 50);
+		
+		el.setAttribute("height", attr.height || 40);
+
+		el.setAttribute("x", attr.x || 40);
+
+		el.setAttribute("y", attr.y || 40);
+
+		return el;
 
 	}
 
