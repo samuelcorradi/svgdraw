@@ -1,7 +1,6 @@
 function addClass(el, cls)
 {
 
-	// el.classList.add("iniciar");
 	if( ! (-1 < el.className.indexOf(cls))  )
 	{
 		var classes = el.className.split(" ");
@@ -17,7 +16,7 @@ function addClass(el, cls)
  * Use the module patter to
  * create the jsdraw lib.
  */
- // TODO: Definir em cada elemento dados.
+ // DONE: Definir em cada elemento dados. (29/12/2015)
 jsdraw = (function(escope) {
 
 	/**
@@ -31,6 +30,16 @@ jsdraw = (function(escope) {
 	{
 
 		/**
+		 * TODO: Exportar o conteúdo
+		 * do canvas para algum
+		 * formato bitmap.
+		 */
+		this.export = function()
+		{
+
+		};
+
+		/**
 		 * Return the SVG node.
 		 */
 		this.getSvg = function()
@@ -38,7 +47,7 @@ jsdraw = (function(escope) {
 
 			return this.getContainer().getElementsByTagName("svg")[0];
 
-		}
+		};
 
 		/**
 		 * Return a tag utilizada como 
@@ -54,7 +63,7 @@ jsdraw = (function(escope) {
 			{
 				throw "Invalid container tag."
 			}
-		}
+		};
 
 		/**
 		 * Remove all elements from
@@ -98,7 +107,17 @@ jsdraw = (function(escope) {
 
 			return new escope.lib.Circle(this, id, attr);
 		
-		}
+		};
+
+		/**
+		 * Factory for circle objects.
+		 */
+		this.path = function(id, x, y, attr)
+		{
+
+			return new escope.lib.Path(this, id, x, y, attr);
+		
+		};
 
 		/**
 		 * Factory for text objects.
@@ -108,7 +127,7 @@ jsdraw = (function(escope) {
 
 			return new escope.lib.Text(this, id, attr, text, multiline);
 		
-		}
+		};
 
 		/**
 		 * Factory for circle objects.
@@ -118,7 +137,7 @@ jsdraw = (function(escope) {
 
 			return new escope.lib.Rect(this, id, attr);
 		
-		}
+		};
 		
 
 		/**
@@ -163,12 +182,24 @@ jsdraw = (function(escope) {
 		var data = {};
 
 		/**
+		 * Store all functions for each
+		 * data set on Element.
+		 * This functions are trigged
+		 * on set data.
+		 */
+		var _dtActions = {};
+
+		/**
 		 * Define a data value.
 		 */
-		this.setData = function(k, v)
+		this.setData = function(k, v, func)
 		{
 
 			data[k] = v;
+
+			func = func || _dtActions[k] || null;
+
+			if( func ) func(this);
 			
 			return this;
 
@@ -177,12 +208,22 @@ jsdraw = (function(escope) {
 		/**
 		 * Get a data value.
 		 */
-		this.data = function(k)
+		this.getData = function(k)
 		{
 
 			return data[k];
 
 		};
+
+		/*
+		 * DONE: Registrar funções que são
+		 * invocadas sempre q atualiza um dado.
+		 * (29/12/2015)
+		 */
+		this.dataAction = function(k, func)
+		{
+			_dtActions[k] = func;
+		}
 
 		/**
 		 * Define elements atributes.
@@ -540,7 +581,7 @@ jsdraw = (function(escope) {
 		},
 
 		/**
-		 * TODO: forma que o texto deve ser quebrado.
+		 * TODO: Forma que o texto deve ser quebrado.
 		 * O SVG já define um objeto chamado textarea
 		 * que faz a quebra automática. Fazer com que
 		 * verifique o suporte 
@@ -608,28 +649,15 @@ jsdraw = (function(escope) {
 
 		},
 
+		// TODO: Retornar a string do texto.
 		getText: function() {
 
 		},
 
+		// TODO: Limpar o texto do elemento.
 		clearText: function() {
 
-		},
-
-		/**
-		 * Pega a quantidade de caracteres 
-		 * que cabem em uma determinada
-		 * largura. Isso é usado para
-		 * definir as quebras de linhas
-		 * do texto dependendo das dimensões
-		 * do local onde ele deve ser inserido.
-		 * Ver a posibilidade de definir uma
-		 * quebra automática baseado na largura
-		 * do próprio elemento de texto.
-		 */
-		charLengthByWidth: function(width) {
-
-		} 
+		}
 
 	};
 
@@ -658,6 +686,199 @@ jsdraw = (function(escope) {
 			el.setAttribute("x", 40);
 
 			el.setAttribute("y", 40);
+
+			return el;
+
+		}
+
+	};
+
+	/**
+	 * Elemento caminho.
+	 */
+	escope.lib.Path = function(Canvas, id, x, y, attr)
+	{
+
+		escope.Element.call(this, Canvas, id, attr);
+
+		/*
+		 * Define o ponto inicial de acordo
+		 * com os pontos x e y informados.
+		 */
+		this.getNode().setAttribute("d", "M" + (x || 0) + " " + (y || 0));
+
+		/**
+		 * Limpa todas informações do caminho.
+		 */ 
+		this.clear = function()
+		{
+			
+			this.getNode().setAttribute("d", "");
+			
+			return this;
+
+		}
+
+		/**
+		 * Diz se uma curva está fechada.
+		 */
+		this.isEmpty = function()
+		{
+
+			if( this.getNode().getAttribute("d")=="" )
+			{
+				return true;
+			}
+
+			return false;
+
+		}
+
+		/**
+		 * Pega informações sobre o
+		 * seguimento especificado.
+		 */
+		this.getSeguiment = function(i)
+		{
+
+		};
+
+		/**
+		 * Pega o ponto espeficado
+		 * pelo índice.
+		 */
+		this.getPoint = function(i)
+		{
+
+		};
+
+		/**
+		 * Adiciona controle para um seguimento
+		 * específico do caminho.
+		 */
+		this.addControler = function(seg_index)
+		{
+
+		};
+
+		/**
+		 * Informa se o caminho já está
+		 * fechado ou não.
+		 * @return bool True if it's closed or false if not.
+		 */
+		this.isClosed = function()
+		{
+
+
+
+		};
+
+		/**
+		 * Adiciona um seguimento
+		 * ao caminho.
+		 * @param string type Tipo de seguimento.
+		 * @param object param Lista de propriedades para o seguimento.
+		 */
+		this.add = function(type, param)
+		{
+
+		};
+
+		/**
+		 * Adiciona um ponto que gera um
+		 * seguimento reto ao caminho.
+		 */
+		this.straight = function(x, y)
+		{
+
+			return this;
+
+		};
+
+		/**
+		 * Adiciona um ponto que gera um
+		 * seguimento reto ao caminho.
+		 */
+		this.hori = function(width)
+		{
+
+			return this;
+
+		};
+
+		/**
+		 * Adiciona um ponto que gera um
+		 * seguimento reto ao caminho.
+		 */
+		this.vert = function(height)
+		{
+
+			return this;
+
+		};
+
+		this.cubic = function(type, param)
+		{
+
+			return this;
+
+		};
+
+		/**
+		 * Draw a Quadratic Bézier Curve.
+		 */
+		this.quad = function(px, py, cx, cy)
+		{
+
+			var el = this.getNode();
+
+			var d = el.getAttribute("d");
+
+			if( d=="" )
+			{
+				d = "M0,0";
+			}
+
+			d = d + " Q" + cx + " " + cy + " " + px + " " + py;
+
+			el.setAttribute("d", d);
+
+			return this;
+
+		};
+
+		this.ellip = function(type, param)
+		{
+
+			return this;
+
+		};
+
+		/**
+		 * Fecha o caminho adicionado um
+		 * último seguimento que coincide
+		 * com o ponto incial.
+		 */
+		this.close = function()
+		{
+
+			if( ! this.isClosed() )
+			{
+			}
+			
+			return this;
+
+		};
+	
+	};
+
+	escope.lib.Path.prototype = {
+
+		draw: function(attr) {
+
+			attr = attr || {};
+
+			var el = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
 			return el;
 
