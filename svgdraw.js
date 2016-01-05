@@ -791,6 +791,19 @@ jsdraw = (function(escope) {
 		this.straight = function(x, y)
 		{
 
+			var el = this.getNode();
+
+			var d = el.getAttribute("d");
+
+			if( d=="" )
+			{
+				d = "M0,0";
+			}
+
+			d = d + " L" + x + "," + y;
+
+			el.setAttribute("d", d);
+
 			return this;
 
 		};
@@ -817,8 +830,29 @@ jsdraw = (function(escope) {
 
 		};
 
-		this.cubic = function(type, param)
+		/**
+		 * @param integer px Posição X do ponto que formará o caminho. 
+		 * @param integer py Posição Y do ponto que formará o caminho. 
+		 * @param integer cx1 Posição X do controle do primeiro ponto. 
+		 * @param integer cy1 Posição Y do controle do primeiro ponto. 
+		 * @param integer cx2 Posição X do controle do segundo ponto. 
+		 * @param integer cy2 Posição Y do controle do segundo ponto. 
+		 */
+		this.cubic = function(px, py, cx1, cy1, cx2, cy2)
 		{
+
+			var el = this.getNode();
+
+			var d = el.getAttribute("d");
+
+			if( d=="" )
+			{
+				d = "M0,0";
+			}
+
+			d = d + " C" + cx1 + "," + cy1 + " " + cx2 + "," + cy2 + " " + px + "," + py;
+
+			el.setAttribute("d", d);
 
 			return this;
 
@@ -839,7 +873,7 @@ jsdraw = (function(escope) {
 				d = "M0,0";
 			}
 
-			d = d + " Q" + cx + " " + cy + " " + px + " " + py;
+			d = d + " Q" + cx + "," + cy + " " + px + "," + py;
 
 			el.setAttribute("d", d);
 
